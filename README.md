@@ -3,7 +3,7 @@
 Simplify Commerce payment plugin for nopCommerce
 ================================================
 
-The Simplify Payment payment plugin for nopCommerce is a payment method for the [nopCommerce] .Net open source shopping cart solution using [Simplify Commerce] to provice secure 
+The Simplify Payment payment plugin for nopCommerce is a payment method for the [nopCommerce] .Net open source shopping cart solution using [Simplify Commerce] to provide secure 
 card payments.  The plugin uses card tokenization so your site never sees customer card details.  Full and partial refunds are also supported.
 
 
