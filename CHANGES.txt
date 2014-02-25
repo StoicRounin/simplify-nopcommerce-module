@@ -1,4 +1,8 @@
 
+1.0.1 (February 25, 2014)
+
+ - Improved diagnostic logging.
+
 1.0.0 (November 13, 2013)
 
  - Inital release of nopCommerce payment plugin for Simplify Commerce.

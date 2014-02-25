@@ -71,7 +71,7 @@ This plugin requires nopCommerce 3.10 or later.
 Version
 -------
 
-This is version 1.0.0 - See [CHANGES.txt](CHANGES.txt) for a list of changes.
+This is version 1.0.1 - See [CHANGES.txt](CHANGES.txt) for a list of changes.
 
 License
 -------

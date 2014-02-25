@@ -1,6 +1,6 @@
 ﻿/*
  * 
- * Copyright (c) 2013, MasterCard International Incorporated
+ * Copyright (c) 2013 - 2014, MasterCard International Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are 
@@ -71,12 +71,12 @@ namespace Nop.Plugin.Payments.Simplify.Models
         {
             return new StringBuilder()
               .Append("ConfigurationModel {")
-              .Append("ActiveStoreScopeConfiguration=").Append(ActiveStoreScopeConfiguration).Append(LiveMode_OverrideForStore ? " (*)" : "")
+              .Append("ActiveStoreScopeConfiguration=").Append(ActiveStoreScopeConfiguration)
               .Append(", LiveMode=").Append(LiveMode).Append(LiveMode_OverrideForStore ? " (*)" : "")
               .Append(", SandboxPublicKey=").Append(SandboxPublicKey).Append(SandboxPublicKey_OverrideForStore ? " (*)" : "")
-              .Append(", SandboxPrivateKey=").Append(SimplifyPaymentHelper.last4(SandboxPrivateKey)).Append(SandboxPrivateKey_OverrideForStore ? " (*)" : "")
+              .Append(", SandboxPrivateKey=").Append(SimplifyPaymentHelper.FirstAndLast4(SandboxPrivateKey)).Append(SandboxPrivateKey_OverrideForStore ? " (*)" : "")
               .Append(", LivePublicKey=").Append(LivePublicKey).Append(LivePublicKey_OverrideForStore ? " (*)" : "")
-              .Append(", LivePrivateKey=").Append(SimplifyPaymentHelper.last4(LivePrivateKey)).Append(LivePrivateKey_OverrideForStore ? " (*)" : "")
+              .Append(", LivePrivateKey=").Append(SimplifyPaymentHelper.FirstAndLast4(LivePrivateKey)).Append(LivePrivateKey_OverrideForStore ? " (*)" : "")
               .Append("}").ToString();
         }
     }

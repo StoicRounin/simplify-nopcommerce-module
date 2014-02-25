@@ -1,6 +1,6 @@
 ﻿/*
  * 
- * Copyright (c) 2013, MasterCard International Incorporated
+ * Copyright (c) 2013 - 2014, MasterCard International Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are 
@@ -119,7 +119,10 @@ namespace Nop.Plugin.Payments.Simplify.Controllers
         {
             Log("Configure [post]");
             if (!ModelState.IsValid)
+            {
+                Log("Configure [post] model state invalid");
                 return Configure();
+            }
 
             Log("Configure model " + model.ToString());
 
@@ -137,7 +140,6 @@ namespace Nop.Plugin.Payments.Simplify.Controllers
             simplifyPaymentSettings.LivePublicKey = model.LivePublicKey;
             simplifyPaymentSettings.LivePrivateKey = _encryptionService.EncryptText(model.LivePrivateKey);
             simplifyPaymentSettings.DebugEnabled = model.DebugEnabled;
-
 
 
             if (model.LiveMode_OverrideForStore || storeScope == 0)
@@ -172,6 +174,7 @@ namespace Nop.Plugin.Payments.Simplify.Controllers
 
 
             //now clear settings cache
+            Log("Configure clearing cache");
             _settingService.ClearCache();
 
             return Configure();
@@ -182,6 +185,7 @@ namespace Nop.Plugin.Payments.Simplify.Controllers
         {
 
             var model = new PaymentInfoModel();
+            Log("PaymentInfo _simplifyPaymentSettings " + _simplifyPaymentSettings.ToString());
 
             if (_simplifyPaymentSettings.LiveMode)
             {

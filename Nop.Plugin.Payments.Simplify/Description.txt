@@ -1,7 +1,7 @@
 ﻿Group: Payment methods
 FriendlyName: Simplify Commerce
 SystemName: Payments.Simplify
-Version: 1.0
+Version: 1.0.1
 SupportedVersions: 3.10
 Author: Simplify Commerce
 DisplayOrder: 1

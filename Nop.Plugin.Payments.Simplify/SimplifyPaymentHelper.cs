@@ -1,6 +1,6 @@
 ﻿/*
  * 
- * Copyright (c) 2013, MasterCard International Incorporated
+ * Copyright (c) 2013 - 2014, MasterCard International Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are 
@@ -37,11 +37,12 @@ namespace Nop.Plugin.Payments.Simplify
 {
     class SimplifyPaymentHelper
     {
-        static public string last4(string s)
+        static public string FirstAndLast4(string s)
         {
             if (s == null || s.Length < 4)
                 return "?";
-            return "..." + s.Substring(s.Length - 4, 4);
+
+            return s.Substring(0, 4) + "..." + s.Substring(s.Length - 4, 4) + " (" + s.Length + " chars)";
         }
     }
 }

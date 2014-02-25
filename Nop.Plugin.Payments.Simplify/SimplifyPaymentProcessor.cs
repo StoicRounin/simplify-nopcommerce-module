@@ -1,6 +1,6 @@
 ﻿/*
  * 
- * Copyright (c) 2013, MasterCard International Incorporated
+ * Copyright (c) 2013 - 2014, MasterCard International Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are 
@@ -225,6 +225,9 @@ namespace Nop.Plugin.Payments.Simplify
             payment.Description = string.Format(_localizationService.GetResource("Plugins.Payments.Simplify.Payment.Description"), storeName, orderId); // TODO l10n
             payment.Reference = processPaymentRequest.OrderGuid.ToString();
 
+            Log("ProcessPayment description: " + payment.Description);
+            Log("ProcessPayment reference: " + payment.Reference);
+
             var result = new ProcessPaymentResult();
             try
             {
@@ -437,7 +440,7 @@ namespace Nop.Plugin.Payments.Simplify
             auth.PublicApiKey = GetPublicKey();
             auth.PrivateApiKey = GetPrivateKey();
             Log("GetAuth public key:  " + auth.PublicApiKey);
-            Log("GetAuth private key: " + SimplifyPaymentHelper.last4(auth.PrivateApiKey));
+            Log("GetAuth private key: " + SimplifyPaymentHelper.FirstAndLast4(auth.PrivateApiKey));
 
             return auth;
         }

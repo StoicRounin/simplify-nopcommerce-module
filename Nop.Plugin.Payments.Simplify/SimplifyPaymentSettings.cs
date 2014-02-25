@@ -1,6 +1,6 @@
 /*
  * 
- * Copyright (c) 2013, MasterCard International Incorporated
+ * Copyright (c) 2013 - 2014, MasterCard International Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are 
@@ -47,9 +47,9 @@ namespace Nop.Plugin.Payments.Simplify
               .Append("SimplifyPaymentSettings {")
               .Append("LiveMode=").Append(LiveMode)
               .Append(", SandboxPublicKey=").Append(SandboxPublicKey)
-              .Append(", SandboxPrivateKey=").Append(SimplifyPaymentHelper.last4(SandboxPrivateKey))
+              .Append(", SandboxPrivateKey=").Append(SimplifyPaymentHelper.FirstAndLast4(SandboxPrivateKey))
               .Append(", LivePublicKey=").Append(LivePublicKey)
-              .Append(", LivePrivateKey=").Append(SimplifyPaymentHelper.last4(LivePrivateKey))
+              .Append(", LivePrivateKey=").Append(SimplifyPaymentHelper.FirstAndLast4(LivePrivateKey))
               .Append(", DebugEnabled=").Append(DebugEnabled)
               .Append("}").ToString();
         }
