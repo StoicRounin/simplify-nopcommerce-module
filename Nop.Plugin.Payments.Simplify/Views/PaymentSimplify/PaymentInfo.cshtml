@@ -5,7 +5,8 @@
 @using Nop.Web.Framework;
 
 
-<script type="text/javascript" src="https://www.simplify.com/commerce/v1/simplify.js"/>
+<script type="text/javascript" src="https://www.simplify.com/commerce/v1/simplify.js">
+</script>
 
 <script type="text/javascript">
 
@@ -28,11 +29,24 @@
 			var token = data['id'];
 			sc_debug("token: " + token);
 
-			var form = $('#co-payment-info-form');
-			form.append("<input type='hidden' name='simplifyToken' value='" + token + "'/>");
-		    sc_debug("delegating to saved function " + sc_savedSubmitFunction);
-			eval(sc_savedSubmitFunction);
+			if (typeof sc_savedSubmitFunction == 'undefined') {
+				// Multi-page checkout
+				sc_debug("multi-page checkout - submitting form");
+				$('.payment-info-next-step-button').removeAttr("disabled");
+				var button = $('.payment-info-next-step-button');
+			    var form = $('div .payment-info form');
+			    form.append("<input type='hidden' name='nextstep' value='Next'/>");
+			    form.append("<input type='hidden' name='simplifyToken' value='" + token + "'/>");
+				form.get(0).submit();
+			} else {
+				// One-page checkout
+			    var form = $('#co-payment-info-form');
+			    form.append("<input type='hidden' name='simplifyToken' value='" + token + "'/>");
+		        sc_debug("one page checkout - delegating to saved function " + sc_savedSubmitFunction);
+			    eval(sc_savedSubmitFunction);
+			}
 		}
+
 	}
 
 	function sc_displayError(error) {
@@ -124,21 +138,33 @@
         sc_debug("document ready");
 
 	    var cur = $('.payment-info-next-step-button').first().attr('onclick');
-	    if (cur == 'sc_paymentSubmit();') {
-		    sc_debug("onclick function already attached to button");
-	    } else {
-	        sc_debug("attaching onclick function to button");
-		    $('.payment-info-next-step-button').first().attr('onclick', 'sc_paymentSubmit();');
-		    sc_savedSubmitFunction = cur;
-	    }
-   	    sc_debug("saved submit function: " + sc_savedSubmitFunction);
+		if (typeof cur == 'undefined' ) {
+			// Multi-page checkout
+			sc_debug('button does not have onclick function; assuming multi-page checkout');
+			var form = $('div .payment-info form');
+			 form.on("submit", function() {
+			    sc_debug("submit called - calling sc_paymentSubmit");
+			    sc_paymentSubmit();
+				sc_debug("returning from submit");
+				return false;
+			 });
 
+		} else {	   
+			// One-page checkout
+		    if (cur == 'sc_paymentSubmit();') {
+		        sc_debug("onclick function already attached to button");
+	        } else {
+	            sc_debug("attaching onclick function to button");
+		        $('.payment-info-next-step-button').first().attr('onclick', 'sc_paymentSubmit();');
+		        sc_savedSubmitFunction = cur;
+	        }
+   	        sc_debug("saved submit function: " + sc_savedSubmitFunction);
+		}
     });
 
 </script>
 
 <table id='sc_payment_method' width="100%" cellspacing="2" cellpadding="1" border="0">
-    <tr>
         <tr>
             <td class="adminTitle">
 	            @Html.NopLabelFor(model => model.CardNumber)

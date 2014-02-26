@@ -144,6 +144,7 @@ namespace Nop.Plugin.Payments.Simplify
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.Refund.Exception", "Unable to process refund - an error has occured");
 
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.Payment.Error.Currency", "Currency {0} is not supported.");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.Payment.Error.Token", "Unable to process payment - no card token generated.");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.Payment.Declined", "Payment declined");
 
             base.Install();
@@ -212,6 +213,13 @@ namespace Nop.Plugin.Payments.Simplify
             {
                 var r = new ProcessPaymentResult();
                 r.AddError(GetMsg("Plugins.Payments.Simplify.Payment.Error.Currency", currency));
+                return r;
+            }
+
+            if (String.IsNullOrEmpty(token))
+            {
+                var r = new ProcessPaymentResult();
+                r.AddError(GetMsg("Plugins.Payments.Simplify.Payment.Error.Token"));
                 return r;
             }
 

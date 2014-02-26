@@ -1,4 +1,8 @@
 
+1.0.2 (February 26, 2014)
+
+ - Added support for multi-page checkout.
+
 1.0.1 (February 25, 2014)
 
  - Improved diagnostic logging.
