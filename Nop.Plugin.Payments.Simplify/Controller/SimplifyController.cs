@@ -50,7 +50,7 @@ using Nop.Web.Framework;
 
 namespace Nop.Plugin.Payments.Simplify.Controllers
 {
-    public class SimplifyController : BaseNopPaymentController
+    public class SimplifyController : BasePaymentController
     {
         private readonly IStoreService _storeService;
         private readonly ISettingService _settingService;
@@ -109,7 +109,7 @@ namespace Nop.Plugin.Payments.Simplify.Controllers
 
             Log("Configure model " + model.ToString());
 
-            return View("Nop.Plugin.Payments.Simplify.Views.PaymentSimplify.Configure", model);
+            return View("~/Plugins/Payments.Simplify/Views/PaymentSimplify/Configure.cshtml", model);
         }
 
         [HttpPost]
@@ -200,7 +200,7 @@ namespace Nop.Plugin.Payments.Simplify.Controllers
 
             Log("PaymentInfo model " + model.ToString());
 
-            return View("Nop.Plugin.Payments.Simplify.Views.PaymentSimplify.PaymentInfo", model);
+            return View("~/Plugins/Payments.Simplify/Views/PaymentSimplify/PaymentInfo.cshtml", model);
         }
 
         public override IList<string> ValidatePaymentForm(FormCollection form)
