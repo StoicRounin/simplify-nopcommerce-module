@@ -428,11 +428,7 @@ namespace Nop.Plugin.Payments.Simplify
 
         public Boolean ValidCurrency(string currency)
         {
-            if (currency != "USD")
-            {
-                return false;
-            }
-
+            // support any currency?
             return true;
         }
 
@@ -567,5 +563,19 @@ namespace Nop.Plugin.Payments.Simplify
         }
 
         #endregion
+
+
+        public bool HidePaymentMethod(IList<ShoppingCartItem> cart)
+        {
+            return false;
+        }
+
+        public bool SkipPaymentInfo
+        {
+            get
+            {
+                return false;
+            }
+        }
     }
 }

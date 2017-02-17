@@ -1,8 +1,8 @@
 ﻿Group: Payment methods
 FriendlyName: Simplify Commerce
 SystemName: Payments.Simplify
-Version: 1.0.3
-SupportedVersions: 3.10
+Version: 1.1.0
+SupportedVersions: 3.80
 Author: Simplify Commerce
 DisplayOrder: 1
 FileName: Nop.Plugin.Payments.Simplify.dll

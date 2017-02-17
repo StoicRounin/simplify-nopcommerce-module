@@ -66,12 +66,12 @@ The source code is located in the folder `Nop.Plugins.Payments.Simplify`.   Copy
 Compatibility
 -------------
 
-This plugin requires nopCommerce 3.10 or later.
+This plugin requires nopCommerce 3.80 or later.
 
 Version
 -------
 
-This is version 1.0.3 - See [CHANGES.txt](CHANGES.txt) for a list of changes.
+This is version 1.1.0 - See [CHANGES.txt](CHANGES.txt) for a list of changes.
 
 License
 -------

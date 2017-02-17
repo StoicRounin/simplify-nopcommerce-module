@@ -11,191 +11,197 @@
 <script type="text/javascript">
 
     function sc_debug(msg) {
-		if ("@Model.DebugEnabled" == "True") {
-			console.log("[SimplifyCommerce PaymentForm] " + msg);
-		}
+        if ("@Model.DebugEnabled" == "True") {
+            console.log("[SimplifyCommerce PaymentForm] " + msg);
+        }
     }
 
-	function sc_responseHandler(data, status) {
-		sc_debug("responseHandler: data " + data);
-		sc_debug("responseHandler: status " + status);
+    function sc_responseHandler(data, status) {
+        sc_debug("responseHandler: data " + data);
+        sc_debug("responseHandler: status " + status);
 
-		if (data.error) {
-			sc_debug("error: " + data.error);
-			sc_displayError(data.error);
-			$('.payment-info-next-step-button').removeAttr("disabled");
+        if (data.error) {
+            sc_debug("error: " + data.error);
+            sc_displayError(data.error);
+            $('.payment-info-next-step-button').removeAttr("disabled");
 
-		} else {
-			var token = data['id'];
-			sc_debug("token: " + token);
+        } else {
+            var token = data['id'];
+            sc_debug("token: " + token);
 
-			if (typeof sc_savedSubmitFunction == 'undefined') {
-				// Multi-page checkout
-				sc_debug("multi-page checkout - submitting form");
-				$('.payment-info-next-step-button').removeAttr("disabled");
-				var button = $('.payment-info-next-step-button');
-			    var form = $('div .payment-info form');
-			    form.append("<input type='hidden' name='nextstep' value='Next'/>");
-			    form.append("<input type='hidden' name='simplifyToken' value='" + token + "'/>");
-				form.get(0).submit();
-			} else {
-				// One-page checkout
-			    var form = $('#co-payment-info-form');
-			    form.append("<input type='hidden' name='simplifyToken' value='" + token + "'/>");
-		        sc_debug("one page checkout - delegating to saved function " + sc_savedSubmitFunction);
-			    eval(sc_savedSubmitFunction);
-			}
-		}
+            if (typeof sc_savedSubmitFunction == 'undefined') {
+                // Multi-page checkout
+                sc_debug("multi-page checkout - submitting form");
+                $('.payment-info-next-step-button').removeAttr("disabled");
+                var button = $('.payment-info-next-step-button');
+                var form = $('div .payment-info form');
+                form.append("<input type='hidden' name='nextstep' value='Next'/>");
+                form.append("<input type='hidden' name='simplifyToken' value='" + token + "'/>");
+                form.get(0).submit();
+            } else {
+                // One-page checkout
+                var form = $('#co-payment-info-form');
+                form.append("<input type='hidden' name='simplifyToken' value='" + token + "'/>");
+                sc_debug("one page checkout - delegating to saved function " + sc_savedSubmitFunction);
+                eval(sc_savedSubmitFunction);
+            }
+        }
 
-	}
+    }
 
-	function sc_displayError(error) {
-		sc_debug("error code: " + error.code);
-		sc_debug("error msg: " + error.message);
-		switch (error.code) {
-			case 'validation':
-			    for (var i = 0; i < error.fieldErrors.length; i++) {
-					var fieldError = error.fieldErrors[i];
-					sc_debug("error field: " + fieldError.field + ", " + fieldError.message);
-					switch (fieldError.field) {
-						case 'card.number': 
-							sc_addError('sc_CardNumber_error', fieldError.message);
-							break;
-						case 'card.expMonth': 
-							sc_addError('sc_CardExpMonth_error', fieldError.message);
-							break;
-						case 'card.expYear': 
-							sc_addError('sc_CardExpYear_error', fieldError.message);
-							break;
-						case 'card.cvc': 
-							sc_addError('sc_CardSecurityCode_error', fieldError.message);
-							break;
-						default: 
-							sc_addError('sc_error', "Error on field '" + fieldError.field + "': " + fieldError.message);
-							break;
-					}
-				}
-				sc_debug("error field: ");
-				break;
-			case 'system':
-				sc_addError('sc_error', error.message);
-				break;
-			default:
-				sc_debug("unexpected error code: " + error.code + ", " + error.message);
-				sc_addError('sc_error', error.message);
-		}
-	}
-	
-	function sc_addError(id, msg) {
-		sc_debug("addError " + id + ", " + msg);
-		$("#" + id).empty();
-		$("#" + id).html(msg);
-	}
+    function sc_displayError(error) {
+        sc_debug("error code: " + error.code);
+        sc_debug("error msg: " + error.message);
+        switch (error.code) {
+            case 'validation':
+                for (var i = 0; i < error.fieldErrors.length; i++) {
+                    var fieldError = error.fieldErrors[i];
+                    sc_debug("error field: " + fieldError.field + ", " + fieldError.message);
+                    switch (fieldError.field) {
+                        case 'card.number':
+                            sc_addError('sc_CardNumber_error', fieldError.message);
+                            break;
+                        case 'card.expMonth':
+                            sc_addError('sc_CardExpMonth_error', fieldError.message);
+                            break;
+                        case 'card.expYear':
+                            sc_addError('sc_CardExpYear_error', fieldError.message);
+                            break;
+                        case 'card.cvc':
+                            sc_addError('sc_CardSecurityCode_error', fieldError.message);
+                            break;
+                        default:
+                            sc_addError('sc_error', "Error on field '" + fieldError.field + "': " + fieldError.message);
+                            break;
+                    }
+                }
+                sc_debug("error field: ");
+                break;
+            case 'system':
+                sc_addError('sc_error', error.message);
+                break;
+            default:
+                sc_debug("unexpected error code: " + error.code + ", " + error.message);
+                sc_addError('sc_error', error.message);
+        }
+    }
 
-	function sc_clearErrors() {
-		$(".sc_error").empty();
-		$(".sc_error").html("");
-	}
+    function sc_addError(id, msg) {
+        sc_debug("addError " + id + ", " + msg);
+        $("#" + id).empty();
+        $("#" + id).html(msg);
+    }
 
-	function sc_isSelected() {
-		if ($('#sc_payment_method').length) {
-			sc_debug("isSelected YES");
-			return true;
-		}
+    function sc_clearErrors() {
+        $(".sc_error").empty();
+        $(".sc_error").html("");
+    }
 
-		sc_debug("isSelected NO");		
-		return false;
-	}
-    
-	function sc_paymentSubmit() {
-  
+    function sc_isSelected() {
+        if ($('#sc_payment_method').length) {
+            sc_debug("isSelected YES");
+            return true;
+        }
+
+        sc_debug("isSelected NO");
+        return false;
+    }
+
+    function sc_paymentSubmit() {
+
         sc_debug("paymentSubmit");
-     	if (!sc_isSelected()) {
-		    sc_debug("not selected; delegating to saved function " + sc_savedSubmitFunction);
-	  	    return eval(sc_savedSubmitFunction);
-	    }
+        if (!sc_isSelected()) {
+            sc_debug("not selected; delegating to saved function " + sc_savedSubmitFunction);
+            return eval(sc_savedSubmitFunction);
+        }
 
-	    sc_debug("generating token");
-		sc_clearErrors();
+        sc_debug("generating token");
+        sc_clearErrors();
 
-	    $('.payment-info-next-step-button').attr("disabled", "disabled");
+        $('.payment-info-next-step-button').attr("disabled", "disabled");
 
-		var publicKey = "@Model.PublicKey";
-		sc_debug("Public key: " + publicKey);
+        var publicKey = "@Model.PublicKey";
+        sc_debug("Public key: " + publicKey);
 
-		SimplifyCommerce.generateToken({
-			key: publicKey,
-			card: {
-				number: $('#sc_CardNumber').val(),
-				expMonth: $('#sc_CardExpMonth').val(),
-				expYear: $('#sc_CardExpYear').val(),
-				cvc: $('#sc_CardSecurityCode').val()
-			}
-		}, sc_responseHandler);
+        SimplifyCommerce.generateToken({
+            key: publicKey,
+            card: {
+                number: $('#sc_CardNumber').val(),
+                expMonth: $('#sc_CardExpMonth').val(),
+                expYear: $('#sc_CardExpYear').val(),
+                cvc: $('#sc_CardSecurityCode').val()
+            }
+        }, sc_responseHandler);
     }
 
-    $(document).ready(function() { 
+    $(document).ready(function () {
         sc_debug("document ready");
 
-	    var cur = $('.payment-info-next-step-button').first().attr('onclick');
-		if (typeof cur == 'undefined' ) {
-			// Multi-page checkout
-			sc_debug('button does not have onclick function; assuming multi-page checkout');
-			var form = $('div .payment-info form');
-			 form.on("submit", function() {
-			    sc_debug("submit called - calling sc_paymentSubmit");
-			    sc_paymentSubmit();
-				sc_debug("returning from submit");
-				return false;
-			 });
+        var cur = $('.payment-info-next-step-button').first().attr('onclick');
+        if (typeof cur == 'undefined') {
+            // Multi-page checkout
+            sc_debug('button does not have onclick function; assuming multi-page checkout');
+            var form = $('div .payment-info form');
+            form.on("submit", function () {
+                sc_debug("submit called - calling sc_paymentSubmit");
+                sc_paymentSubmit();
+                sc_debug("returning from submit");
+                return false;
+            });
 
-		} else {	   
-			// One-page checkout
-		    if (cur == 'sc_paymentSubmit();') {
-		        sc_debug("onclick function already attached to button");
-	        } else {
-	            sc_debug("attaching onclick function to button");
-		        $('.payment-info-next-step-button').first().attr('onclick', 'sc_paymentSubmit();');
-		        sc_savedSubmitFunction = cur;
-	        }
-   	        sc_debug("saved submit function: " + sc_savedSubmitFunction);
-		}
+        } else {
+            // One-page checkout
+            if (cur == 'sc_paymentSubmit();') {
+                sc_debug("onclick function already attached to button");
+            } else {
+                sc_debug("attaching onclick function to button");
+                $('.payment-info-next-step-button').first().attr('onclick', 'sc_paymentSubmit();');
+                sc_savedSubmitFunction = cur;
+            }
+            sc_debug("saved submit function: " + sc_savedSubmitFunction);
+        }
     });
 
 </script>
 
 <table id='sc_payment_method' width="100%" cellspacing="2" cellpadding="1" border="0">
         <tr>
-            <td class="adminTitle">
+            <td class="adminTitle" style="margin-top: 7px; vertical-align: top;">
 	            @Html.NopLabelFor(model => model.CardNumber)
             </td>
             <td class="adminData">
 			    <input autocomplete="off" id="sc_CardNumber" name="" style="Width: 150px;" type="text" value="">
-				<span class="sc_error field-validation-error" id="sc_CardNumber_error"></span>
+				<span class="sc_error field-validation-error" style="text-align: left" id="sc_CardNumber_error"></span>
             </td>
         </tr>
 
         <tr>
-            <td class="adminTitle">
+            <td class="adminTitle" style="margin-top: 7px; vertical-align: top;">
 	            @Html.NopLabelFor(model => model.CardExpiry)
             </td>
             <td class="adminData">
-			    <input autocomplete="off" id="sc_CardExpMonth" name="" style="Width: 40px;" type="text" value="" placeholder="MM">
-				<span class="sc_error field-validation-error" id="sc_CardExpMonth_error"></span>
-				/
-				<input autocomplete="off" id="sc_CardExpYear" name="" style="Width: 40px;" type="text" value="" placeholder="YY">
-				<span class="sc_error field-validation-error" id="sc_CardExpYear_error"></span>
+                <div style="display: inline-flex; width: 100%;">
+                    <div style="max-width: 49%; width: 45%">
+        			    <input autocomplete="off" id="sc_CardExpMonth" name="" type="text" value="" placeholder="MM">
+		        		<span class="sc_error field-validation-error" style="text-align: left" id="sc_CardExpMonth_error"></span>
+				    </div>
+                    <span style="width: 10%; text-align: center; margin-top: 7px; vertical-align: top; padding-left: 10px; padding-right: 10px;"> / </span>
+                    <div style="max-width: 49%; width: 45%">
+         				<input autocomplete="off" id="sc_CardExpYear" name="" type="text" value="" placeholder="YY">
+        				<span class="sc_error field-validation-error" style="text-align: left" id="sc_CardExpYear_error"></span>
+                    </div>
+                </div>
 			</td>
 
 		</tr>
 
 		<tr>
-            <td class="adminTitle">
+            <td class="adminTitle" style="margin-top: 7px; vertical-align: top;">
 	            @Html.NopLabelFor(model => model.CardSecurityCode)
             </td>
             <td class="adminData">
-			    <input autocomplete="off" id="sc_CardSecurityCode" name="" style="Width: 50px;" type="text" value="">
-				<span class="sc_error field-validation-error" id="sc_CardSecurityCode_error"></span>
+			    <input autocomplete="off" id="sc_CardSecurityCode" name="" type="text" value="">
+				<span class="sc_error field-validation-error" style="text-align: left" id="sc_CardSecurityCode_error"></span>
 			</td>
         </tr>
 				
