@@ -58,6 +58,7 @@ namespace Nop.Plugin.Payments.Simplify.Controllers
         private readonly IEncryptionService _encryptionService;
         private readonly ILogger _logger;
         private readonly SimplifyPaymentSettings _simplifyPaymentSettings;
+        private readonly ILocalizationService _localizationService;
 
         public SimplifyController(
             SimplifyPaymentSettings simplifyPaymentSettings,
@@ -65,7 +66,8 @@ namespace Nop.Plugin.Payments.Simplify.Controllers
             ISettingService settingService,
             IWorkContext workContext,
             IEncryptionService encryptionService,
-            ILogger logger
+            ILogger logger,
+            ILocalizationService localizationService
         )
         {
             this._simplifyPaymentSettings = simplifyPaymentSettings;
@@ -74,6 +76,7 @@ namespace Nop.Plugin.Payments.Simplify.Controllers
             this._settingService = settingService;
             this._workContext = workContext;
             this._encryptionService = encryptionService;
+            this._localizationService = localizationService;
         }
 
         [AdminAuthorize]
@@ -176,6 +179,8 @@ namespace Nop.Plugin.Payments.Simplify.Controllers
             //now clear settings cache
             Log("Configure clearing cache");
             _settingService.ClearCache();
+
+            SuccessNotification(_localizationService.GetResource("Admin.Plugins.Saved"));
 
             return Configure();
         }
