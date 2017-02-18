@@ -8,86 +8,81 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    <table class="adminContent">
-        <tr>
-            <td colspan="2">
-                <b>@T("Plugins.Payments.Simplify.Notes")</b>
-            </td>
-        </tr>
-
-        <tr>
-            <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.LiveMode_OverrideForStore, model => model.LiveMode, Model.ActiveStoreScopeConfiguration)
-                @Html.NopLabelFor(model => model.LiveMode):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.LiveMode)
-                @Html.ValidationMessageFor(model => model.LiveMode)
-            </td>
-        </tr>
-
-        <tr>
-            <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.SandboxPublicKey_OverrideForStore, model => model.SandboxPublicKey, Model.ActiveStoreScopeConfiguration)
-                @Html.NopLabelFor(model => model.SandboxPublicKey):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.SandboxPublicKey, new { @size = "86" })
-                @Html.ValidationMessageFor(model => model.SandboxPublicKey)
-            </td>
-        </tr>
-
-
-        <tr>
-            <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.SandboxPrivateKey_OverrideForStore, model => model.SandboxPrivateKey, Model.ActiveStoreScopeConfiguration)
-                @Html.NopLabelFor(model => model.SandboxPrivateKey):
-            </td>
-            <td class="adminData">
-                @Html.PasswordFor(model => model.SandboxPrivateKey, new { @size = "66", @value = Model.SandboxPrivateKey })
-                @Html.ValidationMessageFor(model => model.SandboxPrivateKey)
-            </td>
-        </tr>
-        
-        <tr>
-            <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.LivePublicKey_OverrideForStore, model => model.LivePublicKey, Model.ActiveStoreScopeConfiguration)
-                @Html.NopLabelFor(model => model.LivePublicKey):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.LivePublicKey, new { @size = "86" })
-                @Html.ValidationMessageFor(model => model.LivePublicKey)
-            </td>
-        </tr>
-
-        <tr>
-            <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.LivePrivateKey_OverrideForStore, model => model.LivePrivateKey, Model.ActiveStoreScopeConfiguration)
-                @Html.NopLabelFor(model => model.LivePrivateKey):
-            </td>
-            <td class="adminData">
-                @Html.PasswordFor(model => model.LivePrivateKey, new { @size = "66", @value = Model.LivePrivateKey })
-                @Html.ValidationMessageFor(model => model.LivePrivateKey)
-            </td>
-        </tr>
-
-        <tr>
-            <td class="adminTitle">
-                @Html.OverrideStoreCheckboxFor(model => model.DebugEnabled_OverrideForStore, model => model.DebugEnabled, Model.ActiveStoreScopeConfiguration)
-                @Html.NopLabelFor(model => model.DebugEnabled):
-            </td>
-            <td class="adminData">
-                @Html.EditorFor(model => model.DebugEnabled)
-                @Html.ValidationMessageFor(model => model.DebugEnabled)
-            </td>
-        </tr>
-
-        
-        <tr>
-            <td colspan="2" width="100%">
-                <input type="submit" name="save" class="t-button" value="@T("Admin.Common.Save")" />
-            </td>
-        </tr>
-    </table>
-    
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <p>
+                    <b>@T("Plugins.Payments.Simplify.Notes")</b>
+                </p>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.LiveMode_OverrideForStore, model => model.LiveMode, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.LiveMode)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.LiveMode)
+                        @Html.ValidationMessageFor(model => model.LiveMode)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.SandboxPublicKey_OverrideForStore, model => model.SandboxPublicKey, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.SandboxPublicKey)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.SandboxPublicKey, new { size = "70" })
+                        @Html.ValidationMessageFor(model => model.SandboxPublicKey)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.SandboxPrivateKey_OverrideForStore, model => model.SandboxPrivateKey, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.SandboxPrivateKey)
+                     </div>
+                    <div class="col-md-9">
+                        @Html.PasswordFor(model => model.SandboxPrivateKey, new { @size = "70", @value=Model.SandboxPrivateKey })
+                        @Html.ValidationMessageFor(model => model.SandboxPrivateKey)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.LivePublicKey_OverrideForStore, model => model.LivePublicKey, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.LivePublicKey)
+                     </div>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.LivePublicKey, new { size = "70" })
+                        @Html.ValidationMessageFor(model => model.LivePublicKey)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.LivePrivateKey_OverrideForStore, model => model.LivePrivateKey, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.LivePrivateKey)
+                     </div>
+                    <div class="col-md-9">
+                        @Html.PasswordFor(model => model.LivePrivateKey, new { @size = "70", @value=Model.LivePrivateKey })
+                        @Html.ValidationMessageFor(model => model.LivePrivateKey)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.DebugEnabled_OverrideForStore, model => model.DebugEnabled, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.DebugEnabled)
+                     </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.DebugEnabled)
+                        @Html.ValidationMessageFor(model => model.DebugEnabled)
+                    </div>
+                </div>
+               <div class="form-group">
+                    <div class="col-md-3">
+                        &nbsp;
+                    </div>
+                    <div class="col-md-9">
+                        <input type="submit" name="save" class="btn bg-blue" value="@T("Admin.Common.Save")" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 }
