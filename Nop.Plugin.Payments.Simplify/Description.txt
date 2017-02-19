@@ -2,7 +2,7 @@
 FriendlyName: Simplify Commerce
 SystemName: Payments.Simplify
 Version: 1.1.0
-SupportedVersions: 3.80,3.70
+SupportedVersions: 3.80,3.70,3.60
 Author: Simplify Commerce
 DisplayOrder: 1
 FileName: Nop.Plugin.Payments.Simplify.dll
