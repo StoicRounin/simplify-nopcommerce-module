@@ -27,15 +27,10 @@
     var redirecting = false;
     document.addEventListener('DOMContentLoaded', function () {
         setInterval(function () {
-            console.info("redirecting", redirecting);
             var simplifyButton = document.getElementById("simplify-button");
-            console.info("onclick" in simplifyButton);
             if ("onclick" in simplifyButton && !redirecting) {
                 redirecting = true;
-                console.info("click redirecting", redirecting);
                 simplifyButton.click();
-            } else {
-                console.info("not clicked");
             }
         }, 500);
     });
