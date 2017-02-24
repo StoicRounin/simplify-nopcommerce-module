@@ -34,6 +34,7 @@ namespace Nop.Plugin.Payments.Simplify
 {
     public class SimplifyPaymentSettings : ISettings
     {
+        public bool HostedMode { get; set; }
         public bool LiveMode { get; set; }
         public string SandboxPublicKey { get; set; }
         public string SandboxPrivateKey { get; set; }
@@ -45,7 +46,8 @@ namespace Nop.Plugin.Payments.Simplify
         {
             return new StringBuilder()
               .Append("SimplifyPaymentSettings {")
-              .Append("LiveMode=").Append(LiveMode)
+              .Append("HostedMode=").Append(HostedMode)
+              .Append(", LiveMode=").Append(LiveMode)
               .Append(", SandboxPublicKey=").Append(SandboxPublicKey)
               .Append(", SandboxPrivateKey=").Append(SimplifyPaymentHelper.FirstAndLast4(SandboxPrivateKey))
               .Append(", LivePublicKey=").Append(LivePublicKey)

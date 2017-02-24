@@ -43,6 +43,10 @@ namespace Nop.Plugin.Payments.Simplify.Models
 
         public int ActiveStoreScopeConfiguration { get; set; }
 
+        [NopResourceDisplayName("Plugins.Payments.Simplify.Fields.HostedMode")]
+        public bool HostedMode { get; set; }
+        public bool HostedMode_OverrideForStore { get; set; }
+
         [NopResourceDisplayName("Plugins.Payments.Simplify.Fields.LiveMode")]
         public bool LiveMode {get; set;}
         public bool LiveMode_OverrideForStore { get; set; }
@@ -72,6 +76,7 @@ namespace Nop.Plugin.Payments.Simplify.Models
             return new StringBuilder()
               .Append("ConfigurationModel {")
               .Append("ActiveStoreScopeConfiguration=").Append(ActiveStoreScopeConfiguration)
+              .Append(", HostedMode=").Append(HostedMode).Append(HostedMode_OverrideForStore ? " (*)" : "")
               .Append(", LiveMode=").Append(LiveMode).Append(LiveMode_OverrideForStore ? " (*)" : "")
               .Append(", SandboxPublicKey=").Append(SandboxPublicKey).Append(SandboxPublicKey_OverrideForStore ? " (*)" : "")
               .Append(", SandboxPrivateKey=").Append(SimplifyPaymentHelper.FirstAndLast4(SandboxPrivateKey)).Append(SandboxPrivateKey_OverrideForStore ? " (*)" : "")

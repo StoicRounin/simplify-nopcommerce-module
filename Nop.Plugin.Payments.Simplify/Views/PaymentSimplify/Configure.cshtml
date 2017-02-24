@@ -26,6 +26,16 @@
                 </div>
                 <div class="form-group">
                     <div class="col-md-3">
+                        @Html.OverrideStoreCheckboxFor(model => model.HostedMode_OverrideForStore, model => model.HostedMode, Model.ActiveStoreScopeConfiguration)
+                        @Html.NopLabelFor(model => model.HostedMode)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.HostedMode)
+                        @Html.ValidationMessageFor(model => model.HostedMode)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
                         @Html.OverrideStoreCheckboxFor(model => model.SandboxPublicKey_OverrideForStore, model => model.SandboxPublicKey, Model.ActiveStoreScopeConfiguration)
                         @Html.NopLabelFor(model => model.SandboxPublicKey)
                     </div>

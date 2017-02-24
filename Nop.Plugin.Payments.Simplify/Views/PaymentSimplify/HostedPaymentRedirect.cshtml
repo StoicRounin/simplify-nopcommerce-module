@@ -1,0 +1,42 @@
+﻿@{
+    Layout = "";
+}
+@model Nop.Plugin.Payments.Simplify.Models.PaymentInfoModel
+@using Nop.Web.Framework;
+
+<script type="text/javascript" src="https://www.simplify.com/commerce/simplify.pay.js"></script>
+
+<div class="buttons" style="visibility: hidden">
+	<div class="pull-right">
+        <button id="simplify-button"
+                data-color=""
+                data-sc-key="@Model.PublicKey"
+                data-name="@Model.StoreName"
+                data-reference="@Model.Reference"
+                data-amount="@Model.Amount"
+                data-operation="create.token"
+                data-receipt="false"
+                data-redirect-url="@Model.RedirectUrl"
+                >
+        Pay By Simplify Commerce Hosted Payment
+        </button>
+	</div>
+</div>
+
+<script type="text/javascript">
+    var redirecting = false;
+    document.addEventListener('DOMContentLoaded', function () {
+        setInterval(function () {
+            console.info("redirecting", redirecting);
+            var simplifyButton = document.getElementById("simplify-button");
+            console.info("onclick" in simplifyButton);
+            if ("onclick" in simplifyButton && !redirecting) {
+                redirecting = true;
+                console.info("click redirecting", redirecting);
+                simplifyButton.click();
+            } else {
+                console.info("not clicked");
+            }
+        }, 500);
+    });
+</script>
