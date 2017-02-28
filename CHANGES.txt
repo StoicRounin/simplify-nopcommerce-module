@@ -1,5 +1,9 @@
+1.1.1 (February 24, 2017)
+
+ - Support for Simplify Commerce Hosted Payment
 
 1.1.0 (February 17, 2017)
+
  - Support for nopCommerce 3.80 and compatible with 3.70 and 3.60
 
 1.0.2 (February 26, 2014)

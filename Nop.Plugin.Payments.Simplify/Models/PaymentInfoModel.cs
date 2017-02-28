@@ -44,6 +44,16 @@ namespace Nop.Plugin.Payments.Simplify.Models
     {
         public string PublicKey { get; set; }
 
+        public string StoreName { get; set; }
+
+        public string CustomerName { get; set; }
+
+        public string Reference { get; set; }
+
+        public string Amount { get; set; }
+
+        public string RedirectUrl { get; set; }
+
         public Boolean DebugEnabled { get; set; }
 
         // Dummy properties to get proper lables on the payment form.

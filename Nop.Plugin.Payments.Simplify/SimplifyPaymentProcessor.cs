@@ -33,6 +33,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Routing;
+using System.Web;
 
 using Nop.Core;
 using Nop.Core.Plugins;
@@ -66,6 +67,9 @@ namespace Nop.Plugin.Payments.Simplify
         private readonly PaymentsApi _paymentsApi;
         private readonly ILocalizationService _localizationService;
         private readonly IEncryptionService _encryptionService;
+        private readonly HttpContextBase _httpContext;
+        private readonly IWebHelper _webHelper;
+        private readonly IOrderProcessingService _orderProcessingService;
 
         public SimplifyPaymentProcessor(
             SimplifyPaymentSettings simplifyPaymentSettings,
@@ -77,7 +81,10 @@ namespace Nop.Plugin.Payments.Simplify
             IOrderService orderService,
             ILocalizationService localizationService,
             IEncryptionService encryptionService,
-            ILogger logger
+            ILogger logger,
+            HttpContextBase httpContext,
+            IWebHelper webHelper,
+            IOrderProcessingService orderProcessingService
         )
         {
             this._simplifyPaymentSettings = simplifyPaymentSettings;
@@ -90,6 +97,9 @@ namespace Nop.Plugin.Payments.Simplify
             this._localizationService = localizationService;
             this._encryptionService = encryptionService;
             this._logger = logger;
+            this._httpContext = httpContext;
+            this._webHelper = webHelper;
+            this._orderProcessingService = orderProcessingService;
 
             this._paymentsApi = new PaymentsApi();
         }
@@ -107,6 +117,7 @@ namespace Nop.Plugin.Payments.Simplify
             // Default settings
             var settings = new SimplifyPaymentSettings()
             {
+                HostedMode = true,
                 LiveMode = true,
                 SandboxPublicKey = "",
                 SandboxPrivateKey = "",
@@ -118,6 +129,9 @@ namespace Nop.Plugin.Payments.Simplify
 
             // Locales
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.Notes", "Simplify Commerce payment processing. Sign up for an account at <a href=\"http://www.simplify.com\" target=\"_blank\">www.simplify.com</a>");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.RedirectionTip", "You will be redirected to Simplify Commerce site to complete the order.");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.Fields.HostedMode", "Enable Hosted Mode");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.Fields.HostedMode.Hint", "In hosted mode, securely accept payment on a form hosted by Simplify Commerce. Customer card details are not sent to your site. You must use a hosted payment sandbox or live API key which can be obtained by logging into Simplify Commerce (http://www.simplify.com).");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.Fields.LiveMode", "Enable Live Mode");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.Fields.LiveMode.Hint", "In live mode your live API keys are used to make real payments.  Otherwise your sandbox API keys are used to make test payments.");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.Fields.SandboxPublicKey", "Sandbox Public Key");
@@ -145,6 +159,7 @@ namespace Nop.Plugin.Payments.Simplify
 
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.Payment.Error.Currency", "Currency {0} is not supported.");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.Payment.Error.Token", "Unable to process payment - no card token generated.");
+            this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.Payment.Error.Store", "Unable to process payment - store is not the current context.");
             this.AddOrUpdatePluginLocaleResource("Plugins.Payments.Simplify.Payment.Declined", "Payment declined");
 
             base.Install();
@@ -162,6 +177,9 @@ namespace Nop.Plugin.Payments.Simplify
 
             // Locales
             this.DeletePluginLocaleResource("Plugins.Payments.Simplify.Notes");
+            this.DeletePluginLocaleResource("Plugins.Payments.Simplify.RedirectionTip");
+            this.DeletePluginLocaleResource("Plugins.Payments.Simplify.Fields.HostedMode");
+            this.DeletePluginLocaleResource("Plugins.Payments.Simplify.Fields.HostedMode.Hint");
             this.DeletePluginLocaleResource("Plugins.Payments.Simplify.Fields.LiveMode");
             this.DeletePluginLocaleResource("Plugins.Payments.Simplify.Fields.LiveMode.Hint");
             this.DeletePluginLocaleResource("Plugins.Payments.Simplify.Fields.SandboxPublicKey");
@@ -184,6 +202,8 @@ namespace Nop.Plugin.Payments.Simplify
 
             this.DeletePluginLocaleResource("Plugins.Payments.Simplify.Payment.Description");
             this.DeletePluginLocaleResource("Plugins.Payments.Simplify.Payment.Error.Currency");
+            this.DeletePluginLocaleResource("Plugins.Payments.Simplify.Payment.Error.Token");
+            this.DeletePluginLocaleResource("Plugins.Payments.Simplify.Payment.Error.Store");
             this.DeletePluginLocaleResource("Plugins.Payments.Simplify.Payment.Declined");
             this.DeletePluginLocaleResource("Plugins.Payments.Simplify.Payment.Exception");
             this.DeletePluginLocaleResource("Plugins.Payments.Simplify.Refund.Reason");
@@ -203,9 +223,26 @@ namespace Nop.Plugin.Payments.Simplify
         {
             Log("ProcessPayment settings " + _simplifyPaymentSettings.ToString());
 
+            if (_simplifyPaymentSettings.HostedMode)
+            {
+                var r = new ProcessPaymentResult();
+                r.NewPaymentStatus = PaymentStatus.Pending;
+                return r;
+            }
+
             var token = (string)processPaymentRequest.CustomValues["SIMPLIFY_TOKEN"];
             Log(string.Format("ProcessPayment token: {0}, order total: {1}, Order GUID {2}, Store ID {3}",
                     token, processPaymentRequest.OrderTotal, processPaymentRequest.OrderGuid, processPaymentRequest.StoreId));
+
+            long amount = (long)(processPaymentRequest.OrderTotal * 100L);
+
+            return ProcessPayment(token, amount, processPaymentRequest.OrderGuid.ToString(), processPaymentRequest.StoreId);
+        }
+
+        public ProcessPaymentResult ProcessPayment(string token, long amount, string orderId, int storeId)
+        {
+            Log(string.Format("ProcessPayment to Simplify token: {0}, amount: {1}, Order GUID {2}, Store ID {3}",
+                    token, amount, orderId, storeId));
 
             var currency = _currencyService.GetCurrencyById(_currencySettings.PrimaryStoreCurrencyId).CurrencyCode.ToString();
             Log("ProcessPayment Currency " + currency);
@@ -223,15 +260,21 @@ namespace Nop.Plugin.Payments.Simplify
                 return r;
             }
 
+            if (_storeContext.CurrentStore.Id != storeId)
+            {
+                var r = new ProcessPaymentResult();
+                r.AddError(GetMsg("Plugins.Payments.Simplify.Payment.Error.Store"));
+                return r;
+            }
+
             var storeName = _storeContext.CurrentStore.Name;
-            var orderId = processPaymentRequest.OrderGuid;
 
             Payment payment = new Payment();
-            payment.Amount = (long)(processPaymentRequest.OrderTotal * 100);
+            payment.Amount = amount;
             payment.Currency = currency;
             payment.Token = token;
             payment.Description = string.Format(_localizationService.GetResource("Plugins.Payments.Simplify.Payment.Description"), storeName, orderId); // TODO l10n
-            payment.Reference = processPaymentRequest.OrderGuid.ToString();
+            payment.Reference = orderId;
 
             Log("ProcessPayment description: " + payment.Description);
             Log("ProcessPayment reference: " + payment.Reference);
@@ -274,6 +317,22 @@ namespace Nop.Plugin.Payments.Simplify
         public void PostProcessPayment(PostProcessPaymentRequest postProcessPaymentRequest)
         {
             Log("PostProcessPayment");
+
+            if (_simplifyPaymentSettings.HostedMode)
+            {
+                var builder = new StringBuilder();
+                builder.AppendFormat("{0}{1}?", _webHelper.GetStoreLocation(false), "Plugins/PaymentSimplify/HostedPaymentRedirect");
+                
+                var orderTotal = (long)Math.Round(postProcessPaymentRequest.Order.OrderTotal, 2) * 100L;
+                builder.AppendFormat("&amount={0}", orderTotal.ToString());
+                builder.AppendFormat("&reference={0}", postProcessPaymentRequest.Order.OrderGuid);
+                builder.AppendFormat("&customerName={0}",
+                    HttpUtility.UrlEncode(string.Format("{0} {1}",
+                        postProcessPaymentRequest.Order.Customer.BillingAddress.FirstName,
+                        postProcessPaymentRequest.Order.Customer.BillingAddress.LastName)));
+
+                _httpContext.Response.Redirect(builder.ToString());
+            }
         }
 
         /// <summary>
@@ -558,7 +617,14 @@ namespace Nop.Plugin.Payments.Simplify
         {
             get
             {
-                return PaymentMethodType.Standard;
+                if (_simplifyPaymentSettings.HostedMode)
+                {
+                    return PaymentMethodType.Redirection;
+                }
+                else
+                {
+                    return PaymentMethodType.Standard;
+                }
             }
         }
 
