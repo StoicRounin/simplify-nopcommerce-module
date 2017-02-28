@@ -326,6 +326,10 @@ namespace Nop.Plugin.Payments.Simplify
                 var orderTotal = (long)Math.Round(postProcessPaymentRequest.Order.OrderTotal, 2) * 100L;
                 builder.AppendFormat("&amount={0}", orderTotal.ToString());
                 builder.AppendFormat("&reference={0}", postProcessPaymentRequest.Order.OrderGuid);
+                builder.AppendFormat("&customerName={0}",
+                    HttpUtility.UrlEncode(string.Format("{0} {1}",
+                        postProcessPaymentRequest.Order.Customer.BillingAddress.FirstName,
+                        postProcessPaymentRequest.Order.Customer.BillingAddress.LastName)));
 
                 _httpContext.Response.Redirect(builder.ToString());
             }

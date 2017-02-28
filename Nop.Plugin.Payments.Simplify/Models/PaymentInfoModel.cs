@@ -46,6 +46,8 @@ namespace Nop.Plugin.Payments.Simplify.Models
 
         public string StoreName { get; set; }
 
+        public string CustomerName { get; set; }
+
         public string Reference { get; set; }
 
         public string Amount { get; set; }

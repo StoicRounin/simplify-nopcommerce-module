@@ -272,7 +272,7 @@ namespace Nop.Plugin.Payments.Simplify.Controllers
             return paymentInfo;
         }
 
-        public ActionResult HostedPaymentRedirect(string amount, string reference, string storeName)
+        public ActionResult HostedPaymentRedirect(string amount, string reference, string customerName)
         {
             var model = new PaymentInfoModel();
             model.Amount = amount;
@@ -280,6 +280,7 @@ namespace Nop.Plugin.Payments.Simplify.Controllers
             model.RedirectUrl = _webHelper.GetStoreLocation(false) + "Plugins/PaymentSimplify/PostHostedPaymentHandler";
             model.Reference = reference;
             model.StoreName = _storeContext.CurrentStore.Name;
+            model.CustomerName = customerName;
 
             return View("~/Plugins/Payments.Simplify/Views/PaymentSimplify/HostedPaymentRedirect.cshtml", model);
         }
