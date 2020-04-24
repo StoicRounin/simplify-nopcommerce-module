@@ -10,7 +10,7 @@ card payments.  The plugin uses card tokenization so your site never sees custom
 Installation
 ------------
 
-* Using the link http://www.nopcommerce.com/p/1213/simplify-commerce-payment-module.aspx download the plugin from the [nopCommerce] site.
+* Download the latest version of the plugin from the releases tab.
 
 * Extract the contents of the ZIP file and copy the `Payments.Simplify` folder to the nopCommerce `Plugins` folder on your nopCommerce website.
 
